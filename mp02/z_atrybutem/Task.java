@@ -1,4 +1,4 @@
-package kompozycja;
+package z_atrybutem;
 
 import java.util.Date;
 
@@ -21,6 +21,10 @@ public class Task {
 	public boolean isComplete() {
 		Date now = new Date();
 		return now.after(this.endAt);
+	}
+	
+	public String toString() {
+		return "'" + this.stage.toString() + "' wykonywane przez " + this.user.toString();
 	}
 	
 	

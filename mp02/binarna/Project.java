@@ -13,5 +13,9 @@ public class Project {
 	public String getClientName() {
 		return this.client.name;
 	}
+	
+	public String toString() {
+		return this.name;
+	}
 
 }

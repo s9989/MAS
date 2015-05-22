@@ -9,8 +9,8 @@ public class Example {
 		 Project zagospodarowanie = new Project("Zagospodarowanie terenu", urzad);
 		 Project wizualizacja = new Project("Wizualizacja nowego oddziału", urzad);
 		 
-		 System.out.println(zagospodarowanie.getClientName());
-		 System.out.println(wizualizacja.getClientName());
+		 System.out.println("Projekt '" + zagospodarowanie + "' (klient: " + zagospodarowanie.getClientName() + ")");
+		 System.out.println("Projekt '" + wizualizacja + "' (klient: " +  wizualizacja.getClientName() + ")");
 		 
 	 }
 	
