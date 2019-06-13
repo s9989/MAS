@@ -18,7 +18,7 @@ public class Gui extends JFrame
             public void run() {
                 try {
                     Gui gui = new Gui();
-                    gui.screen2();
+                    gui.screen1();
                     gui.base();
                     gui.setVisible(true);
                 } catch (Exception e) {
@@ -161,6 +161,30 @@ public class Gui extends JFrame
         elementsPosition += (small) ? 35 : 50;
     }
 
+    private void leftButton(String label)
+    {
+        JButton button = new JButton(label);
+        button.setBounds(400, 600, 140, 32);
+        button.setFont(new Font("Tahoma", Font.BOLD, 12));
+        button.setForeground(new Color(255, 255, 255));
+        button.setBackground(new Color(147, 23, 0));
+        button.setBorder(new EmptyBorder(0,0,0,0));
+        button.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPane.add(button);
+    }
+
+    private void rightButton(String label)
+    {
+        JButton button = new JButton(label);
+        button.setBounds(1020, 600, 140, 32);
+        button.setFont(new Font("Tahoma", Font.BOLD, 12));
+        button.setForeground(new Color(255, 255, 255));
+        button.setBackground(new Color(29, 163, 16));
+        button.setBorder(new EmptyBorder(0,0,0,0));
+        button.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPane.add(button);
+    }
+
     public void screen1()
     {
         elementsPosition = 170;
@@ -180,6 +204,9 @@ public class Gui extends JFrame
         elementsPosition = 480;
 
         addSubtitle("Etapy:");
+
+        leftButton("Anuluj");
+        rightButton("Dodaj");
     }
 
     public void screen2()
@@ -187,6 +214,8 @@ public class Gui extends JFrame
         elementsPosition = 170;
 
         addTitle("Projekty:");
+
+
     }
 
 
