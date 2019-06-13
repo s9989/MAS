@@ -9,6 +9,7 @@ public class Gui extends JFrame
 {
 
     private JPanel contentPane;
+    int elementsPosition = 0;
 
     public static void main(String[] args)
     {
@@ -17,7 +18,7 @@ public class Gui extends JFrame
             public void run() {
                 try {
                     Gui gui = new Gui();
-                    gui.screen1();
+                    gui.screen2();
                     gui.base();
                     gui.setVisible(true);
                 } catch (Exception e) {
@@ -30,7 +31,7 @@ public class Gui extends JFrame
     Gui()
     {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(2024, 100, 1200, 675);
+        setBounds(600, 300, 1200, 675);
         setBackground(new Color(123,0,0));
 
         contentPane = new JPanel();
@@ -66,7 +67,7 @@ public class Gui extends JFrame
         lblWelcome.setForeground(new Color(21, 21, 31));
         lblWelcome.setHorizontalAlignment(SwingConstants.LEFT);
         lblWelcome.setFont(new Font("Tahoma", Font.PLAIN, 36));
-        lblWelcome.setBounds(400, 90, 400, 143);
+        lblWelcome.setBounds(400, 40, 400, 73);
         contentPane.add(lblWelcome);
 
         JLabel logo = new JLabel("");
@@ -116,74 +117,77 @@ public class Gui extends JFrame
         }
     }
 
-    public void screen1()
+    private void addTitle(String title)
     {
-        JLabel lblWelcome = new JLabel("<html>Nowy projekt</html>");
-        lblWelcome.setForeground(new Color(21, 21, 31));
-        lblWelcome.setHorizontalAlignment(SwingConstants.LEFT);
-        lblWelcome.setFont(new Font("Tahoma", Font.PLAIN, 24));
-        lblWelcome.setBounds(400, 200, 400, 40);
-        contentPane.add(lblWelcome);
+        JLabel label = new JLabel(title);
+        label.setForeground(new Color(21, 21, 31));
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        label.setFont(new Font("Tahoma", Font.PLAIN, 24));
+        label.setBounds(400, elementsPosition - 50, 400, 40);
+        contentPane.add(label);
+    }
 
-        JLabel lbl = new JLabel("Nazwa");
+    private void addSubtitle(String title)
+    {
+        JLabel label = new JLabel(title);
+        label.setForeground(new Color(21, 21, 31));
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        label.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        label.setBounds(400, elementsPosition - 40, 400, 40);
+        contentPane.add(label);
+    }
+
+    private void addInput(String label, boolean small)
+    {
+        JLabel lbl = new JLabel(label);
         lbl.setForeground(new Color(48,48,48));
         lbl.setBackground(new Color(255, 255, 255));
-        lbl.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        lbl.setBounds(400, 250, 180, 36);
-        lbl.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        lbl.setBounds(400, elementsPosition, 180, (small) ? 24 : 36);
+        lbl.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         lbl.setOpaque(true);
+        lbl.setFont(new Font("Tahoma", Font.PLAIN, (small) ? 12 : 16));
         contentPane.add(lbl);
 
         JTextField textField = new JTextField();
         textField.setForeground(new Color(48, 48, 48));
-        textField.setFont(new Font("Tahoma", Font.PLAIN, 16));
 //        textField.setBorder(new MatteBorder(0, 0, 2, 0, new Color(218,165, 32)));
-        textField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        textField.setBounds(600, 250, 400, 36);
+        textField.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        textField.setBounds(600, elementsPosition, 400, (small) ? 24 : 36);
 //        textField.setOpaque(false);
         textField.setColumns(10);
+        textField.setFont(new Font("Tahoma", Font.PLAIN, (small) ? 12 : 16));
         contentPane.add(textField);
 
-        JLabel lbl2 = new JLabel("Data rozpoczęcia");
-        lbl2.setForeground(new Color(48,48,48));
-        lbl2.setBackground(new Color(255, 255, 255));
-        lbl2.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        lbl2.setBounds(400, 300, 180, 36);
-        lbl2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        lbl2.setOpaque(true);
-        contentPane.add(lbl2);
-
-        JTextField textField2 = new JTextField();
-        textField2.setForeground(new Color(48, 48, 48));
-        textField2.setFont(new Font("Tahoma", Font.PLAIN, 16));
-//        textField2.setBorder(new MatteBorder(0, 0, 2, 0, new Color(218,165, 32)));
-        textField2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        textField2.setBounds(600, 300, 400, 36);
-//        textField2.setOpaque(false);
-        textField2.setColumns(10);
-        contentPane.add(textField2);
-
-        JLabel lbl3 = new JLabel("Data zakończenia");
-        lbl3.setForeground(new Color(48,48,48));
-        lbl3.setBackground(new Color(255, 255, 255));
-        lbl3.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        lbl3.setBounds(400, 350, 180, 36);
-        lbl3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        lbl3.setOpaque(true);
-        contentPane.add(lbl3);
-
-        JTextField textField3 = new JTextField();
-        textField3.setForeground(new Color(48, 48, 48));
-        textField3.setFont(new Font("Tahoma", Font.PLAIN, 16));
-//        textField3.setBorder(new MatteBorder(0, 0, 2, 0, new Color(218,165, 32)));
-        textField3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        textField3.setBounds(600, 350, 400, 36);
-//        textField3.setOpaque(false);
-        textField3.setColumns(10);
-        contentPane.add(textField3);
-
+        elementsPosition += (small) ? 35 : 50;
     }
 
+    public void screen1()
+    {
+        elementsPosition = 170;
+
+        addTitle("Nowy projekt");
+
+        addInput("Nazwa projektu", false);
+        addInput("Data rozpoczęcia", false);
+        addInput("Data zakończenia", false);
+
+        elementsPosition = 370;
+
+        addSubtitle("Nowy Etap");
+        addInput("Nazwa", true);
+        addInput("Typ", true);
+
+        elementsPosition = 480;
+
+        addSubtitle("Etapy:");
+    }
+
+    public void screen2()
+    {
+        elementsPosition = 170;
+
+        addTitle("Projekty:");
+    }
 
 
 }
