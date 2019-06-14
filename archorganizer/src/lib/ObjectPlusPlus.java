@@ -69,6 +69,27 @@ public abstract class ObjectPlusPlus extends ObjectPlus implements Serializable 
         }
     }
 
+    private void removeLink(String roleName, String reverseRoleName, ObjectPlusPlus targetObject, Object qualifier, int counter)
+    {
+        Map<Object, ObjectPlusPlus> objectLinks;
+
+        if (counter < 1) {
+            return;
+        }
+
+        if (!links.containsKey(roleName)) {
+            return;
+        }
+
+        objectLinks = links.get(roleName);
+
+        if (objectLinks.containsKey(qualifier)) {
+
+            targetObject.removeLink(reverseRoleName, roleName, this, this, counter - 1);
+            objectLinks.remove(qualifier);
+        }
+    }
+
     /**
      * Creates a new link to the given target object (optionally as quilified connection).
      * @param roleName
@@ -81,12 +102,33 @@ public abstract class ObjectPlusPlus extends ObjectPlus implements Serializable 
     }
 
     /**
+     * Removes existing link from given target object
+     * @param roleName
+     * @param reverseRoleName
+     * @param targetObject
+     * @param qualifier
+     */
+    public void removeLink(String roleName, String reverseRoleName, ObjectPlusPlus targetObject, Object qualifier) {
+        removeLink(roleName, reverseRoleName, targetObject, qualifier, 2);
+    }
+
+    /**
      * Creates a new link to the given target object (as an ordinary association, not the quilified one).
      * @param roleName
      * @param reverseRoleName
      * @param targetObject
      */
     public void addLink(String roleName, String reverseRoleName, ObjectPlusPlus targetObject) {
+        addLink(roleName, reverseRoleName, targetObject, targetObject);
+    }
+
+    /**
+     * Removes existing link from given target object
+     * @param roleName
+     * @param reverseRoleName
+     * @param targetObject
+     */
+    public void removeLink(String roleName, String reverseRoleName, ObjectPlusPlus targetObject) {
         addLink(roleName, reverseRoleName, targetObject, targetObject);
     }
 

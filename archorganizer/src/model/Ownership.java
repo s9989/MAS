@@ -11,4 +11,10 @@ public class Ownership extends ObjectPlusPlus
 
     private Date dateFrom;
     private Date dateTo;
+
+    public Ownership(Date dateFrom, Date dateTo)
+    {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+    }
 }
