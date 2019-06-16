@@ -1,5 +1,7 @@
 package lib;
 
+import lib.exception.NoLinksException;
+
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
@@ -156,12 +158,12 @@ public abstract class ObjectPlusPlus extends ObjectPlus implements Serializable 
      * @return ObjectPlusPlus[]
      * @throws Exception
      */
-    public ObjectPlusPlus[] getLinks(String roleName) throws Exception {
+    public ObjectPlusPlus[] getLinks(String roleName) throws NoLinksException {
         Map<Object, ObjectPlusPlus> objectLinks;
 
         if(!links.containsKey(roleName)) {
             // No links for the role
-            throw new Exception("No links for the role: " + roleName);
+            throw new NoLinksException("No links for the role: " + roleName);
         }
 
         objectLinks = links.get(roleName);
@@ -206,13 +208,13 @@ public abstract class ObjectPlusPlus extends ObjectPlus implements Serializable 
 
         if(!links.containsKey(roleName)) {
             // No links
-            throw new Exception("No links for the role: " + roleName);
+            throw new NoLinksException("No links for the role: " + roleName);
         }
 
         objectLinks = links.get(roleName);
         if(!objectLinks.containsKey(qualifier)) {
             // No link for the qualifer
-            throw new Exception("No link for the qualifer: " + qualifier);
+            throw new NoLinksException("No link for the qualifer: " + qualifier);
         }
 
         return objectLinks.get(qualifier);

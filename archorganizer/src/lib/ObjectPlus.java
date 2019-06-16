@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+/* ekstensja */
 /**
  * @author Mariusz Trzaska
  * Fill free to send me any remarks: mtrzaska@pjwstk.edu.pl
@@ -46,6 +47,7 @@ public abstract class ObjectPlus implements Serializable {
         stream.writeObject(allExtents);
     }
 
+    /* metoda klasowa */
     /**
      * Reads all extents from the given stream (a utility class method).
      * @throws IOException

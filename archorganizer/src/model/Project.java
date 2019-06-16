@@ -1,11 +1,9 @@
 package model;
 
 import lib.ObjectPlusPlus;
+import lib.exception.NoLinksException;
 
-import javax.print.Doc;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Project extends ObjectPlusPlus
 {
@@ -20,10 +18,15 @@ public class Project extends ObjectPlusPlus
 
     private String name;
 
+    /* atrybut złożony */
     private Date startAt;
-    private Date endEt;
+    private Date endAt;
     private int netCost;
     private int grosCost;
+
+    public Project(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
@@ -41,12 +44,12 @@ public class Project extends ObjectPlusPlus
         this.startAt = startAt;
     }
 
-    public Date getEndEt() {
-        return endEt;
+    public Date getEndAt() {
+        return endAt;
     }
 
-    public void setEndEt(Date endEt) {
-        this.endEt = endEt;
+    public void setEndAt(Date endAt) {
+        this.endAt = endAt;
     }
 
     public int getNetCost() {
@@ -65,23 +68,48 @@ public class Project extends ObjectPlusPlus
         this.grosCost = grosCost;
     }
 
+    /* atrybut wyliczalny (pochodny) */
+    public int getManDays()
+    {
+        return (int) Math.floor((getEndAt().getTime() - getStartAt().getTime()) / (1000 * 24 * 60 * 60));
+    }
+
+    /* atrybut powatarzalny*/
     private Map<String, Stage> stages;
 
     private List<Ownership> ownerships;
 
-    public void addOwner(Architect architect, Date dateFrom, Date dateTo) throws Exception
+    /**
+     * Dodawanie właściciela projektu
+     *
+     * @param architect Architekt - właściciel
+     * @param dateFrom data od
+     * @param dateTo data do
+     */
+    public void addOwner(Architect architect, Date dateFrom, Date dateTo)
     {
         Ownership ownership = new Ownership(dateFrom, dateTo);
 
-        addLink("ownership", "project", architect);
+        addLink("ownership", "project", ownership, architect);
         ownership.addLink("owner", "ownership", architect);
     }
 
-    public void addMainOwner(Architect architect) throws Exception
+    /**
+     * Dodanie właściciela projektu przez cały czas trwania projektu
+     *
+     * @param architect Architekt - właściciel
+     */
+    public void addMainOwner(Architect architect)
     {
-        this.addOwner(architect, this.startAt, this.endEt);
+        this.addOwner(architect, this.startAt, this.endAt);
     }
 
+    /**
+     * Usunięcie właściciela z projektu
+     *
+     * @param architect Architekt - właściciel
+     * @throws Exception w wypadku braku właściciela
+     */
     public void removeOwner(Architect architect) throws Exception
     {
         ObjectPlusPlus ownership = getLinkedObject("ownership", architect);
@@ -89,30 +117,101 @@ public class Project extends ObjectPlusPlus
         removeLink("ownerhip", "project", architect);
     }
 
+    /**
+     * Dodanie etapu do projektu
+     * @param name nazwa etapu
+     * @param cost koszt etapu
+     */
     public void addStage(String name, int cost)
     {
         Stage stage = new Stage(name, cost);
         addLink("stage", "project", stage, (Object) name);
     }
 
+    /**
+     * Usunięcie etapu z projektu
+     *
+     * @param name nazwa etapu do usunięcia
+     * @throws Exception w wypadku braku etapu o zadanej nazwie
+     */
     public void removeStage(String name) throws Exception
     {
         ObjectPlusPlus targetObject = getLinkedObject("stage", (Object) name);
         removeLink("stage", "project", targetObject, (Object) name);
     }
 
+    /**
+     * Zwraca koszt etapu o zadanej nazwie
+     *
+     * @param name nazwa etapu
+     * @return int koszt
+     * @throws Exception w wypadku braku etapu w zadanej nazwie
+     */
+    public int getStageCost(String name) throws Exception
+    {
+        Stage stage;
+
+        try {
+            stage = (Stage) getLinkedObject("stage", name);
+        } catch (NoLinksException e) {
+            throw new Exception("Stage " + name + " not found");
+        }
+
+        return stage.getCost();
+    }
+
+    /**
+     * Zwraca wszystkie nazwy etapów
+     *
+     * @return ArrayList<String> kolekcja nazw etapów
+     */
+    public ArrayList<String> getStageNames()
+    {
+        ArrayList<String> names = new ArrayList<>();
+
+        try {
+            for (ObjectPlusPlus o : getLinks("stage")) {
+                Stage stage = (Stage) o;
+                names.add(stage.getName());
+            }
+        } catch (NoLinksException e) {
+            return names;
+        }
+
+        return names;
+    }
+
+    /**
+     * Dodaje specjalistę do danego etapu
+     *
+     * @param stageName nazwa etapu
+     * @param expert specjalista
+     * @param dateFrom data od
+     * @param dateTo data do
+     * @throws Exception w przypadku braku etapu o zadanej nazwie
+     */
     public void addImplementation(String stageName, Expert expert, Date dateFrom, Date dateTo) throws Exception
     {
         Stage stage = (Stage) getLinkedObject("stage", (Object) stageName);
         stage.appendExpert(expert, dateFrom, dateTo);
     }
 
+    /**
+     * Usuwa specjalistę z danego etapu
+     *
+     * @param stageName nazwa etapu
+     * @param expert specjalista
+     * @throws Exception w przypadku braku etapu o zadanej nazwie
+     */
     public void removeImplementation(String stageName, Expert expert) throws Exception
     {
         Stage stage = (Stage) getLinkedObject("stage", (Object) stageName);
         stage.removeExpert(expert);
     }
 
+    /**
+     * Klasa etapu projektu (kompozycja)
+     */
     private class Stage extends ObjectPlusPlus
     {
         private String name;
@@ -128,18 +227,49 @@ public class Project extends ObjectPlusPlus
             this.cost = cost;
         }
 
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getCost() {
+            return cost;
+        }
+
+        public void setCost(int cost) {
+            this.cost = cost;
+        }
+
+        /**
+         * Dodaje dokument do etapu
+         *
+         * @param name nazwa dokumentu
+         * @param filename nazwa pliku
+         */
         public void addDocument(String name, String filename)
         {
             Document document = new Document(name, filename);
             addLink("document", "stage", document, (Object) name);
         }
 
+        /**
+         * Usuwa dokument z etapu
+         *
+         * @param name nazwa dokumentu
+         * @throws Exception w przypadku braku dokumentu o zadanej nazwie
+         */
         public void removeDocument(String name) throws Exception
         {
             ObjectPlusPlus targetObject = getLinkedObject("document", (Object) name);
             removeLink("document", "stage", targetObject, (Object) name);
         }
 
+        /**
+         * Klasa pośrednicząca między specjalistą (Expert) i etapem (Stage)
+         */
         private class Implementation extends ObjectPlusPlus
         {
             private Date dateFrom;
@@ -152,14 +282,27 @@ public class Project extends ObjectPlusPlus
             }
         }
 
+        /**
+         * Dodanie specjalisty do implementacj
+         *
+         * @param expert specjalista
+         * @param fromDate data od
+         * @param toDate data do
+         */
         public void appendExpert(Expert expert, Date fromDate, Date toDate)
         {
             Implementation implementation = new Implementation(fromDate, toDate);
 
-            addLink("implementation", "stage", expert);
+            addLink("implementation", "stage", implementation, expert);
             implementation.addLink("expert", "implementation", expert);
         }
 
+        /**
+         * Usunięcie specjalisty z implementacji
+         *
+         * @param expert specjalista
+         * @throws Exception w wypadku braku specjalisty w implementacji
+         */
         public void removeExpert(Expert expert) throws Exception
         {
             ObjectPlusPlus ownership = getLinkedObject("ownership", expert);
@@ -167,6 +310,9 @@ public class Project extends ObjectPlusPlus
             removeLink("ownerhip", "project", expert);
         }
 
+        /**
+         * Klasa dokumentu - klasa wewnętrzna etapu (kompozycja)
+         */
         private class Document extends ObjectPlusPlus
         {
             private String name;
