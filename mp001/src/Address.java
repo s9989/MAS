@@ -2,7 +2,7 @@ public class Address {
 
     private String street;
     private String house;
-    private String apartament;
+    private String apartment;
     private String postCode;
     private String country;
 
@@ -22,12 +22,12 @@ public class Address {
         this.house = house;
     }
 
-    public String getApartament() {
-        return apartament;
+    public String getApartment() {
+        return apartment;
     }
 
-    public void setApartament(String apartament) {
-        this.apartament = apartament;
+    public void setApartment(String apartment) {
+        this.apartment = apartment;
     }
 
     public String getPostCode() {
